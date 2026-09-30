@@ -21,6 +21,18 @@ const FIVE: readonly ChannelDef[] = [
 
 const flat = (minutes: number, level: number, count = 4): SchedulePoint => ({ minutes, levels: new Array<number>(count).fill(level) });
 
+test("a compact chart is about a third as tall as it is wide, clamped between 112 and 150 px, and needs no more room than a full one", () => {
+  assert.equal(chartHeight(300, true), 112);
+  assert.equal(chartHeight(400, true), 120);
+  assert.equal(chartHeight(700, true), 150);
+  assert.equal(chartHeight(0, true), 112);
+  assert.equal(chartHeight(400, false), 200, "the default is unchanged");
+  const compact = chartLayout(375, false, true);
+  const full = chartLayout(375, false);
+  assert.ok(compact.height < full.height);
+  assert.equal(compact.box.width, full.box.width, "the same time axis, only shorter");
+});
+
 test("the chart is about half as tall as it is wide, clamped between 180 and 300 px", () => {
   assert.equal(chartHeight(300), 180);
   assert.equal(chartHeight(400), 200);

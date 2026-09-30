@@ -22,6 +22,7 @@ export class AquariumHoldButton extends LitElement {
     icon: { type: String },
     disabled: { type: Boolean, reflect: true },
     busy: { type: Boolean, reflect: true },
+    tone: { type: String, reflect: true },
     config: { attribute: false },
   };
 
@@ -31,6 +32,8 @@ export class AquariumHoldButton extends LitElement {
   declare disabled: boolean;
   /** The confirmed action is in progress: show a spinner and refuse presses. */
   declare busy: boolean;
+  /** `danger` for an action that can hurt (the charge and icon turn to the danger colour). */
+  declare tone: "neutral" | "danger";
   declare config: HoldConfig;
 
   private _hold: HoldState = HOLD_IDLE;
@@ -48,6 +51,7 @@ export class AquariumHoldButton extends LitElement {
     this.icon = "save";
     this.disabled = false;
     this.busy = false;
+    this.tone = "neutral";
     this.config = DEFAULT_HOLD_CONFIG;
   }
 
@@ -208,6 +212,9 @@ export class AquariumHoldButton extends LitElement {
     css`
       :host { display: block; }
       .hold { position: relative; display: block; width: 100%; min-height: var(--lu-target); padding: 0; border: 1px solid var(--lu-edge-raised); border-radius: var(--lu-radius-pill); color: var(--lu-ink); background-color: var(--lu-glass-raised); box-shadow: var(--lu-highlight-raised); overflow: hidden; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; }
+      :host([tone="danger"]) .hold { border-color: color-mix(in srgb, var(--lu-danger) 45%, var(--lu-edge)); }
+      :host([tone="danger"]) .fill { background: color-mix(in srgb, var(--lu-danger) 26%, transparent); }
+      :host([tone="danger"]) .lead { color: var(--lu-danger); }
       .hold:disabled { opacity: var(--lu-disabled-opacity); cursor: default; }
       .fill { position: absolute; inset: 0; background: var(--lu-accent-soft); transform-origin: left center; transform: scaleX(0); pointer-events: none; }
       .hold:not(.reduced) .fill { transition: transform var(--lu-motion-press) linear; }

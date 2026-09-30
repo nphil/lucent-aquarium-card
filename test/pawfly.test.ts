@@ -75,6 +75,7 @@ test("a manual light becomes a model with channels, levels, swatches, scenes and
   assert.equal(model.schedule?.programs.length, 6);
   assert.equal(model.schedule?.runningId, null);
   assert.equal(model.schedule?.maxPoints, 12);
+  assert.equal(model.lightingPrograms, undefined, "lighting programs belong to the Fluval only");
   assert.deepEqual(binding.watch, ["light.tank", "select.tank_program", "binary_sensor.tank_connected"]);
   assert.equal(binding.deviceId, "dev1");
   assert.equal(model.status.mode, "Manual colour");

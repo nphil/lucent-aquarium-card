@@ -6,8 +6,9 @@ import { minutesOfDay } from "../lib/clock.ts";
 import { DeviceSession } from "../lib/device-session.ts";
 import { icon, type IconName } from "../lib/icons.ts";
 import { browserStorage } from "../lib/last-known.ts";
+import { usableProgram } from "../lib/light-config.ts";
 import { nextRovingIndex } from "../lib/roving.ts";
-import type { AquariumCardConfig, CardTab, HomeAssistant } from "../types.ts";
+import type { AquariumCardConfig, CardTab, HomeAssistant, ProgramConfig } from "../types.ts";
 import { CONTROL_CSS, TOKENS_CSS } from "../styles/tokens.ts";
 import type { ChannelChangeDetail, LevelsSelectDetail } from "./aquarium-colour-panel.ts";
 import type { EffectSelectDetail } from "./aquarium-effects-panel.ts";
@@ -20,6 +21,7 @@ import "./aquarium-hero.ts";
 import "./aquarium-colour-panel.ts";
 import "./aquarium-effects-panel.ts";
 import "./aquarium-schedule-panel.ts";
+import "./aquarium-program-panel.ts";
 import "./aquarium-card-editor.ts";
 
 interface TabInfo {
@@ -32,6 +34,7 @@ const ALL_TABS: readonly TabInfo[] = [
   { id: "colour", label: "Colour", icon: "palette" },
   { id: "effects", label: "Effects", icon: "effects" },
   { id: "schedule", label: "Schedule", icon: "clock" },
+  { id: "program", label: "Program", icon: "playlistPlay" },
 ];
 
 function isTab(value: unknown): value is CardTab {
@@ -153,7 +156,18 @@ export class AquariumLightCard extends LitElement {
     if (!previous || !this.hass || !this._binding) return true;
     if (previous.entities !== this.hass.entities || previous.language !== this.hass.language) return true;
     if (previous.themes?.darkMode !== this.hass.themes?.darkMode) return true;
-    return this._binding.watch.some((id) => previous.states[id] !== this.hass.states[id]);
+    return [...this._binding.watch, ...this._programIds()].some((id) => previous.states[id] !== this.hass.states[id]);
+  }
+
+  /** The lighting-program settings, when both entities that make them work are named. */
+  private _programConfig(): ProgramConfig | undefined {
+    return usableProgram(this._config?.program);
+  }
+
+  /** The helpers the Program tab shows, whose changes must re-render the card. */
+  private _programIds(): string[] {
+    const program = this._programConfig();
+    return program ? [program.select, program.started, program.reapply].filter((id): id is string => typeof id === "string" && id !== "") : [];
   }
 
   protected willUpdate(): void {
@@ -168,7 +182,7 @@ export class AquariumLightCard extends LitElement {
     const tabs = this._tabs(this._server);
     if (this._tab === undefined && this._server && this._server.phase !== "loading") {
       const running = this._server.phase === "on" ? this._server.running.kind : "manual";
-      const preferred: CardTab = running === "effect" ? "effects" : running === "schedule" ? "schedule" : "colour";
+      const preferred: CardTab = running === "effect" ? "effects" : running === "schedule" ? (tabs.some((tab) => tab.id === "program") ? "program" : "schedule") : "colour";
       this._tab = tabs.some((tab) => tab.id === preferred) ? preferred : (tabs[0]?.id ?? "colour");
     }
     const shown = this._shownTab(tabs);
@@ -252,7 +266,12 @@ export class AquariumLightCard extends LitElement {
   /** Tabs the light supports: the Colour tab needs channels, Effects needs an effect list. */
   private _tabs(model: DeviceModel | null): TabInfo[] {
     if (!model) return [];
-    return ALL_TABS.filter((tab) => (tab.id === "colour" ? model.channels.length > 0 : tab.id === "effects" ? model.effects !== null : model.schedule !== null));
+    return ALL_TABS.filter((tab) => {
+      if (tab.id === "colour") return model.channels.length > 0;
+      if (tab.id === "effects") return model.effects !== null;
+      if (tab.id === "schedule") return model.schedule !== null;
+      return model.lightingPrograms !== undefined && this._programConfig() !== undefined;
+    });
   }
 
   /** The 30 s tick that moves the live schedule colour; runs only while it can be seen. */
@@ -419,6 +438,11 @@ export class AquariumLightCard extends LitElement {
             )
           : nothing}
       </div>
+      <div class="panel" role="tabpanel" id="panel-program" aria-labelledby="tab-program" ?hidden=${tab !== "program"}>
+        ${this._visited.has("program") && display.lightingPrograms && this._programConfig()
+          ? html`<aquarium-program-panel .hass=${this.hass} .hassRef=${this._ref} .config=${this._programConfig()} .channels=${display.lightingPrograms.channels} .timeZone=${this._timeZone()} .active=${tab === "program"}></aquarium-program-panel>`
+          : nothing}
+      </div>
     `;
   }
 
@@ -444,6 +468,7 @@ export class AquariumLightCard extends LitElement {
       .tab[aria-selected="true"]:focus-visible::after { display: none; }
       .panel { min-width: 0; }
       [hidden] { display: none !important; }
+      @container (max-width: 359px) { .tab { padding-inline: 2px; font-size: 13px; } }
       @container (min-width: 440px) { .tab { flex-direction: row; gap: var(--lu-space-2); min-height: var(--lu-target); } .tab[aria-selected="true"]::after { display: none; } .body { padding: var(--lu-space-5) var(--lu-space-4) var(--lu-space-4); } }
       @container (min-width: 720px) {
         .layout { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: stretch; }
@@ -462,7 +487,7 @@ window.customCards = window.customCards || [];
 window.customCards.push({
   type: "aquarium-light-card",
   name: "Aquarium light",
-  description: "Colour, effects and schedules for Pawfly and Fluval aquarium lights.",
+  description: "Colour, effects, schedules and lighting programs for Pawfly and Fluval aquarium lights.",
   preview: true,
 });
 

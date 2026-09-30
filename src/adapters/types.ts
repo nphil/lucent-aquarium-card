@@ -130,6 +130,14 @@ export interface ScheduleModel {
   readOnlyNote?: string;
 }
 
+/** Named lighting programs (a light schedule plus a CO2 window, kept in the user's automation) can
+ * be shown and edited for this light. The card offers them only when it was also given the
+ * `program` settings. */
+export interface LightingProgramsModel {
+  /** The light's channels, named as it reports them ([] until it has). */
+  channels: readonly ChannelDef[];
+}
+
 export interface ActionDef {
   id: string;
   label: string;
@@ -163,6 +171,8 @@ export interface DeviceModel {
   tank: TankColour | null;
   effects: EffectsModel | null;
   schedule: ScheduleModel | null;
+  /** Absent when the light has no lighting programs. */
+  lightingPrograms?: LightingProgramsModel;
   /** Device actions (sync the clock, return to schedule); shown in the Schedule tab. */
   actions: readonly ActionDef[];
   notices: readonly Notice[];

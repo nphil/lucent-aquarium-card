@@ -268,6 +268,8 @@ test("the model has no channels until the readback arrives, then five named ones
   assert.equal(after.effects?.demo, null);
   assert.deepEqual(after.tank, { rgb: [255, 255, 255] });
   assert.deepEqual(after.schedule?.programs.map((p) => p.id), ["automatic", "professional"]);
+  assert.deepEqual(before.lightingPrograms?.channels, [], "lighting programs are offered, but have no channels to show until the light has named them");
+  assert.deepEqual(after.lightingPrograms?.channels.map((c) => c.name), ["Pink", "Blue", "Cold White", "White", "Warm White"], "the editor labels its levels with the light's own channel names");
   const loaded = await after.schedule!.load("automatic");
   assert.equal(loaded.points.length, 6, "four points, plus the two that switch the light off at the sleep minute");
   dispose();

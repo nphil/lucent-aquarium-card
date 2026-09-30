@@ -12,6 +12,11 @@ export const SEGMENT_CSS = css`
   .seg[aria-checked="true"] { color: var(--lu-ink); font-weight: 600; background-color: var(--lu-glass-raised); border-color: var(--lu-edge-raised); box-shadow: var(--lu-highlight-raised), var(--lu-shadow-raised); }
   .seg[aria-checked="true"]::before { content: ""; position: absolute; left: 5px; top: 50%; width: 3px; height: 16px; margin-top: -8px; border-radius: 2px; background: var(--lu-accent); }
   .seg:active { transform: scale(var(--lu-scale-pressed)); }
+  @media (forced-colors: active) {
+    .seg { border-color: ButtonBorder; }
+    .seg[aria-checked="true"] { border: 2px solid Highlight; }
+    .seg[aria-checked="true"]::before { forced-color-adjust: none; background: Highlight; }
+  }
 `;
 
 /** A short inline message with an action, on a reading-grade surface (Undo, confirmations). */

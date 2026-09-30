@@ -147,6 +147,7 @@ function buildModel(reading: FluvalReading, entities: FluvalEntities, ref: HassR
     tank: reading.rgb ? { rgb: reading.rgb } : null,
     effects: effects.length > 0 ? { effects, runningId: reading.effect, offId: EFFECT_NONE, demo: null } : null,
     schedule,
+    lightingPrograms: { channels },
     actions,
     notices: channels.length > 0 ? [{ kind: "info", text: "This light does not report its channel levels in manual mode, so the sliders show what you set here." }] : [],
     live: () => {

@@ -10,6 +10,9 @@ import { formatTime, LAST_MINUTE, type SchedulePoint } from "./points.ts";
 
 export const CHART_MIN_HEIGHT = 180;
 export const CHART_MAX_HEIGHT = 300;
+/** The compact chart (a live preview that stays in view while something else is edited). */
+export const COMPACT_MIN_HEIGHT = 112;
+export const COMPACT_MAX_HEIGHT = 150;
 /** Height of the timeline rail the point grips sit on (editor only). */
 export const RAIL_HEIGHT = 40;
 
@@ -28,13 +31,14 @@ export interface ChartLayout {
   labelY: number;
 }
 
-/** About half the width, kept between 180 and 300 px so it is neither a sliver nor a wall. */
-export function chartHeight(width: number): number {
-  return Math.round(clamp(width * 0.5, CHART_MIN_HEIGHT, CHART_MAX_HEIGHT));
+/** About half the width, kept between 180 and 300 px so it is neither a sliver nor a wall; a
+ * compact chart is about a third of it, between 112 and 150 px. */
+export function chartHeight(width: number, compact = false): number {
+  return compact ? Math.round(clamp(width * 0.3, COMPACT_MIN_HEIGHT, COMPACT_MAX_HEIGHT)) : Math.round(clamp(width * 0.5, CHART_MIN_HEIGHT, CHART_MAX_HEIGHT));
 }
 
-export function chartLayout(width: number, interactive: boolean): ChartLayout {
-  const base = chartHeight(width);
+export function chartLayout(width: number, interactive: boolean, compact = false): ChartLayout {
+  const base = chartHeight(width, compact);
   const plotHeight = base - MARGIN.top - MARGIN.bottom;
   const plotBottom = MARGIN.top + plotHeight;
   const rail = interactive ? RAIL_HEIGHT : 0;

@@ -298,7 +298,7 @@ export function parseSchedulePayload(raw: unknown): SchedulePayload | null {
 
 const DAY_MINUTES = 1440;
 /** The light accepts ramps of 0-240 minutes. */
-const RAMP_MAX = 240;
+export const RAMP_MAX = 240;
 
 const wrapDay = (minutes: number): number => ((minutes % DAY_MINUTES) + DAY_MINUTES) % DAY_MINUTES;
 const clampRamp = (ramp: number): number => (Number.isFinite(ramp) ? Math.max(0, Math.min(RAMP_MAX, Math.trunc(ramp))) : 0);

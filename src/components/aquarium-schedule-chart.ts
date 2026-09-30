@@ -85,6 +85,7 @@ export class AquariumScheduleChart extends LitElement {
     nowMinutes: { attribute: false },
     label: { type: String },
     interactive: { type: Boolean, reflect: true },
+    compact: { type: Boolean, reflect: true },
     selected: { type: Number },
     snap: { type: Number },
     stale: { type: Boolean, reflect: true },
@@ -102,6 +103,8 @@ export class AquariumScheduleChart extends LitElement {
   /** Accessible name of the program ("Dutch style"). */
   declare label: string;
   declare interactive: boolean;
+  /** A short chart without the colour ribbon and the channel legend: a live preview. */
+  declare compact: boolean;
   /** Selected point index (editor). */
   declare selected: number;
   /** Time step in minutes for drags and keys. */
@@ -134,6 +137,7 @@ export class AquariumScheduleChart extends LitElement {
     this.nowMinutes = null;
     this.label = "Schedule";
     this.interactive = false;
+    this.compact = false;
     this.selected = -1;
     this.snap = SNAP_MINUTES;
     this.stale = false;
@@ -193,9 +197,9 @@ export class AquariumScheduleChart extends LitElement {
 
   protected willUpdate(changed: PropertyValues<this>): void {
     if (this._width === 0) this._width = Math.round(this.getBoundingClientRect().width);
-    const layoutChanged = changed.has("_width") || changed.has("interactive");
+    const layoutChanged = changed.has("_width") || changed.has("interactive") || changed.has("compact");
     const shapeChanged = changed.has("points") || changed.has("channels");
-    if (layoutChanged) this._layout = chartLayout(this._width, this.interactive);
+    if (layoutChanged) this._layout = chartLayout(this._width, this.interactive, this.compact);
     if (layoutChanged || shapeChanged) this._geometry = channelGeometry(this.points, this._layout.box, this.channels);
     if (shapeChanged) this._ribbon = ribbonGradient(ribbonStops(this.points, this.channels));
     if (changed.has("points") || changed.has("label")) this._summary = chartSummary(this.label, this.points);
@@ -342,15 +346,15 @@ export class AquariumScheduleChart extends LitElement {
               ${this.stale ? html`<div class="stale-chip" style=${`left:${layout.box.left + 8}px;top:${layout.box.top + 8}px`}>Last known values</div>` : nothing}`
           : nothing}
       </div>
-      ${ready ? html`<div class="ribbon" aria-hidden="true" style=${`margin-left:${layout.box.left}px;width:${layout.box.width}px;background:${this._ribbon}`}></div>` : nothing}
-      <div class="legend" role="group" aria-label="Channels shown">
+      ${ready && !this.compact ? html`<div class="ribbon" aria-hidden="true" style=${`margin-left:${layout.box.left}px;width:${layout.box.width}px;background:${this._ribbon}`}></div>` : nothing}
+      ${this.compact ? nothing : html`<div class="legend" role="group" aria-label="Channels shown">
         ${this.channels.map((channel) => {
           const on = this._isVisible(channel);
           return html`<button type="button" class="key" aria-pressed=${on ? "true" : "false"} aria-label=${channel.name} @click=${() => this._toggleChannel(channel.id)}>
             <span class="key-chip"><span class="key-dot ${on ? "" : "off"}" style=${`--c:${channel.colour}`}></span><span class="key-short" aria-hidden="true">${channel.short}</span><span class="key-name" aria-hidden="true">${channel.name}</span></span>
           </button>`;
         })}
-      </div>
+      </div>`}
     </div>`;
   }
 
