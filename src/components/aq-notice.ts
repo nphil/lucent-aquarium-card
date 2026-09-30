@@ -1,7 +1,7 @@
 import { LitElement, css, html, nothing } from "lit";
 import { icon, type IconName } from "../lib/icons.ts";
 import { CONTROL_CSS, TOKENS_CSS } from "../styles/tokens.ts";
-import "./lu-pill-button.ts";
+import "./aq-pill-button.ts";
 
 export type LuNoticeKind = "info" | "warning" | "error";
 
@@ -46,7 +46,7 @@ export class LuNotice extends LitElement {
         ${this.heading ? html`<p class="heading">${this.heading}</p>` : nothing}
         ${this.message ? html`<p class="message">${this.message}</p>` : nothing}
       </div>
-      ${this.actionLabel ? html`<lu-pill-button variant="secondary" .label=${this.actionLabel} .icon=${this.actionIcon} ?loading=${this.busy} @lu-press=${this._act}></lu-pill-button>` : nothing}
+      ${this.actionLabel ? html`<aq-pill-button variant="secondary" .label=${this.actionLabel} .icon=${this.actionIcon} ?loading=${this.busy} @lu-press=${this._act}></aq-pill-button>` : nothing}
     </div>`;
   }
 
@@ -67,21 +67,21 @@ export class LuNotice extends LitElement {
       :host([kind="warning"]) .glyph { color: var(--lu-warning); }
       :host([kind="error"]) .glyph { color: var(--lu-danger); }
       .copy { grid-column: 2; min-width: 0; }
-      lu-pill-button { grid-column: 3; }
+      aq-pill-button { grid-column: 3; }
       p { margin: 0; }
       .heading { font: 600 var(--lu-type-label)/1.3 var(--lu-font); }
       .message { color: var(--lu-ink-2); font: 400 var(--lu-type-label)/1.4 var(--lu-font); overflow-wrap: anywhere; }
       .heading + .message { margin-top: var(--lu-space-1); }
       :host([compact]) .notice { padding: var(--lu-space-2) var(--lu-space-3); }
-      @container (max-width: 420px) { lu-pill-button { grid-column: 2 / -1; justify-self: start; } }
+      @container (max-width: 420px) { aq-pill-button { grid-column: 2 / -1; justify-self: start; } }
     `,
   ];
 }
 
-customElements.define("lu-notice", LuNotice);
+customElements.define("aq-notice", LuNotice);
 
 declare global {
   interface HTMLElementTagNameMap {
-    "lu-notice": LuNotice;
+    "aq-notice": LuNotice;
   }
 }

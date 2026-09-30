@@ -4,8 +4,8 @@ import { cssRgb, glowFor } from "../lib/channels.ts";
 import { icon } from "../lib/icons.ts";
 import { nextRovingIndex } from "../lib/roving.ts";
 import { CONTROL_CSS, TOKENS_CSS } from "../styles/tokens.ts";
-import "./lu-notice.ts";
-import "./lu-pill-button.ts";
+import "./aq-notice.ts";
+import "./aq-pill-button.ts";
 
 export interface EffectSelectDetail {
   id: string;
@@ -72,7 +72,7 @@ export class AquariumEffectsPanel extends LitElement {
   private _renderStop(model: DeviceModel) {
     const effects = model.effects;
     if (!effects?.offId || !effects.runningId || model.phase !== "on") return nothing;
-    return html`<lu-pill-button variant="quiet" icon="stop" label="Stop effect" ?disabled=${this.disabled} @lu-press=${() => this.dispatchEvent(new CustomEvent<EffectSelectDetail>("effect-select", { detail: { id: effects.offId as string }, bubbles: true, composed: true }))}></lu-pill-button>`;
+    return html`<aq-pill-button variant="quiet" icon="stop" label="Stop effect" ?disabled=${this.disabled} @lu-press=${() => this.dispatchEvent(new CustomEvent<EffectSelectDetail>("effect-select", { detail: { id: effects.offId as string }, bubbles: true, composed: true }))}></aq-pill-button>`;
   }
 
   private _renderDemo(model: DeviceModel) {
@@ -93,8 +93,8 @@ export class AquariumEffectsPanel extends LitElement {
         <p class="demo-note">${demo.available ? demo.description : demo.reason}</p>
       </div>
       <div class="demo-actions">
-        <lu-pill-button variant="secondary" icon="playCircle" label="Play demo" ?disabled=${!canRun} @lu-press=${() => this.dispatchEvent(new CustomEvent("demo-start", { bubbles: true, composed: true }))}></lu-pill-button>
-        ${demo.available || !model.schedule ? nothing : html`<lu-pill-button variant="quiet" label="Open schedule" ?disabled=${this.disabled} @lu-press=${() => this.dispatchEvent(new CustomEvent("open-schedule", { bubbles: true, composed: true }))}></lu-pill-button>`}
+        <aq-pill-button variant="secondary" icon="playCircle" label="Play demo" ?disabled=${!canRun} @lu-press=${() => this.dispatchEvent(new CustomEvent("demo-start", { bubbles: true, composed: true }))}></aq-pill-button>
+        ${demo.available || !model.schedule ? nothing : html`<aq-pill-button variant="quiet" label="Open schedule" ?disabled=${this.disabled} @lu-press=${() => this.dispatchEvent(new CustomEvent("open-schedule", { bubbles: true, composed: true }))}></aq-pill-button>`}
       </div>
     </div>`;
   }
@@ -108,9 +108,9 @@ export class AquariumEffectsPanel extends LitElement {
     const activeIndex = list.findIndex((effect) => effect.id === active);
     const focusable = activeIndex >= 0 ? activeIndex : Math.min(this._focus, Math.max(0, list.length - 1));
     return html`
-      ${this.disabled ? html`<lu-notice kind="warning" compact heading="Effects are paused" message="They come back when the light is reachable again."></lu-notice>` : nothing}
+      ${this.disabled ? html`<aq-notice kind="warning" compact heading="Effects are paused" message="They come back when the light is reachable again."></aq-notice>` : nothing}
       ${list.length === 0
-        ? html`<lu-notice kind="info" compact heading="No effects reported yet" message="The light has not sent its effect list. It appears once Home Assistant has the light's state."></lu-notice>`
+        ? html`<aq-notice kind="info" compact heading="No effects reported yet" message="The light has not sent its effect list. It appears once Home Assistant has the light's state."></aq-notice>`
         : html`<section aria-labelledby="effects-title">
             <h3 id="effects-title">Scenes</h3>
             <div class="tiles" role="radiogroup" aria-label="Scenes">

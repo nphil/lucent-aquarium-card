@@ -51,10 +51,10 @@ export class LuChip extends LitElement {
   ];
 }
 
-customElements.define("lu-chip", LuChip);
+customElements.define("aq-chip", LuChip);
 
 declare global {
   interface HTMLElementTagNameMap {
-    "lu-chip": LuChip;
+    "aq-chip": LuChip;
   }
 }

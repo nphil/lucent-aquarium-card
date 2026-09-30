@@ -60,10 +60,10 @@ export class LuIconButton extends LitElement {
   ];
 }
 
-customElements.define("lu-icon-button", LuIconButton);
+customElements.define("aq-icon-button", LuIconButton);
 
 declare global {
   interface HTMLElementTagNameMap {
-    "lu-icon-button": LuIconButton;
+    "aq-icon-button": LuIconButton;
   }
 }

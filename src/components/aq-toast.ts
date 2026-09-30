@@ -118,10 +118,10 @@ export class LuToast extends LitElement {
   ];
 }
 
-customElements.define("lu-toast", LuToast);
+customElements.define("aq-toast", LuToast);
 
 declare global {
   interface HTMLElementTagNameMap {
-    "lu-toast": LuToast;
+    "aq-toast": LuToast;
   }
 }

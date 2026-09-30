@@ -4,7 +4,7 @@ import { levelsEqual, levelsLabel, swatchColour, zeroLevels, type Levels } from 
 import { icon } from "../lib/icons.ts";
 import { nextRovingIndex } from "../lib/roving.ts";
 import { CONTROL_CSS, TOKENS_CSS } from "../styles/tokens.ts";
-import "./lu-notice.ts";
+import "./aq-notice.ts";
 import "./aquarium-slider.ts";
 import type { SliderDetail } from "./aquarium-slider.ts";
 
@@ -73,11 +73,11 @@ export class AquariumColourPanel extends LitElement {
     const running = model.phase === "on" && model.running.kind !== "manual" ? model.status.mode : null;
     return html`
       ${this.disabled
-        ? html`<lu-notice kind="warning" compact heading="Colour controls are paused" message="They come back when the light is reachable again."></lu-notice>`
+        ? html`<aq-notice kind="warning" compact heading="Colour controls are paused" message="They come back when the light is reachable again."></aq-notice>`
         : running
-          ? html`<lu-notice kind="info" compact message=${`Running ${running}. Moving a slider or choosing a colour switches the light to manual.`}></lu-notice>`
+          ? html`<aq-notice kind="info" compact message=${`Running ${running}. Moving a slider or choosing a colour switches the light to manual.`}></aq-notice>`
           : nothing}
-      ${model.notices.map((notice) => html`<lu-notice kind=${notice.kind} compact message=${notice.text}></lu-notice>`)}
+      ${model.notices.map((notice) => html`<aq-notice kind=${notice.kind} compact message=${notice.text}></aq-notice>`)}
       ${swatches.length > 0
         ? html`<section class="group" aria-labelledby="presets-title">
             <h3 id="presets-title">Presets</h3>

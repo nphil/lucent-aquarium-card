@@ -70,10 +70,10 @@ export class LuPillButton extends LitElement {
   ];
 }
 
-customElements.define("lu-pill-button", LuPillButton);
+customElements.define("aq-pill-button", LuPillButton);
 
 declare global {
   interface HTMLElementTagNameMap {
-    "lu-pill-button": LuPillButton;
+    "aq-pill-button": LuPillButton;
   }
 }

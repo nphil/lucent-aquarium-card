@@ -1,6 +1,6 @@
 import { LitElement, css, html, type PropertyValues } from "lit";
 import { CONTROL_CSS, TOKENS_CSS } from "../styles/tokens.ts";
-import "./lu-icon-button.ts";
+import "./aq-icon-button.ts";
 
 function deepestActiveElement(): HTMLElement | null {
   let active: Element | null = document.activeElement;
@@ -96,7 +96,7 @@ export class AquariumSheet extends LitElement {
         <header class="header">
           <div class="title"><slot name="header"></slot></div>
           <slot name="actions"></slot>
-          <lu-icon-button icon="close" label="Close" @lu-press=${this.requestClose}></lu-icon-button>
+          <aq-icon-button icon="close" label="Close" @lu-press=${this.requestClose}></aq-icon-button>
         </header>
         <div class="body"><slot></slot></div>
         <footer class="footer"><slot name="footer"></slot></footer>

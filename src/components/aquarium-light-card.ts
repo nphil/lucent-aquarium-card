@@ -12,10 +12,10 @@ import { CONTROL_CSS, TOKENS_CSS } from "../styles/tokens.ts";
 import type { ChannelChangeDetail, LevelsSelectDetail } from "./aquarium-colour-panel.ts";
 import type { EffectSelectDetail } from "./aquarium-effects-panel.ts";
 import type { SliderDetail } from "./aquarium-slider.ts";
-import type { LuToast, ToastRequest } from "./lu-toast.ts";
-import "./lu-icon-button.ts";
-import "./lu-notice.ts";
-import "./lu-toast.ts";
+import type { LuToast, ToastRequest } from "./aq-toast.ts";
+import "./aq-icon-button.ts";
+import "./aq-notice.ts";
+import "./aq-toast.ts";
 import "./aquarium-hero.ts";
 import "./aquarium-colour-panel.ts";
 import "./aquarium-effects-panel.ts";
@@ -286,7 +286,7 @@ export class AquariumLightCard extends LitElement {
   // ---- intents from children ----
 
   private _toast(request: ToastRequest): void {
-    this.renderRoot.querySelector<LuToast>("lu-toast")?.enqueue(request);
+    this.renderRoot.querySelector<LuToast>("aq-toast")?.enqueue(request);
   }
 
   private _onToast = (event: CustomEvent<ToastRequest>): void => {
@@ -342,15 +342,15 @@ export class AquariumLightCard extends LitElement {
 
   render() {
     if (!this._config) return nothing;
-    if (!this.hass) return html`<ha-card><div class="frame"><lu-notice heading="Waiting for Home Assistant" message="The card connects as soon as Home Assistant has loaded."></lu-notice></div></ha-card>`;
+    if (!this.hass) return html`<ha-card><div class="frame"><aq-notice heading="Waiting for Home Assistant" message="The card connects as soon as Home Assistant has loaded."></aq-notice></div></ha-card>`;
     const session = this._session;
     if (!this._binding || !session) {
       const platform = this.hass.entities?.[this._config.entity ?? ""]?.platform;
       const message = platform ? `Lights from the ${platform} integration are not supported yet.` : `${this._config.entity} is not a light this card can control. Pick a supported aquarium light in the card editor.`;
-      return html`<ha-card><div class="frame"><lu-notice kind="error" heading="Light not supported" message=${message}></lu-notice></div></ha-card>`;
+      return html`<ha-card><div class="frame"><aq-notice kind="error" heading="Light not supported" message=${message}></aq-notice></div></ha-card>`;
     }
     if (!this._server && Object.keys(this.hass.states).length > 0) {
-      return html`<ha-card><div class="frame"><lu-notice kind="error" heading="Light not found" message=${`Home Assistant has no state for ${this._config.entity}. Check the card configuration or that the integration is loaded.`}></lu-notice></div></ha-card>`;
+      return html`<ha-card><div class="frame"><aq-notice kind="error" heading="Light not found" message=${`Home Assistant has no state for ${this._config.entity}. Check the card configuration or that the integration is loaded.`}></aq-notice></div></ha-card>`;
     }
 
     const controller = session.controller;
@@ -388,7 +388,7 @@ export class AquariumLightCard extends LitElement {
           </div>
         </div>
       </div>
-      <lu-toast></lu-toast>
+      <aq-toast></aq-toast>
     </ha-card>`;
   }
 

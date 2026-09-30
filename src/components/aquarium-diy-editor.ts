@@ -16,11 +16,11 @@ import { SEGMENT_CSS, STRIP_CSS } from "../styles/schedule.ts";
 import type { PointAddDetail, PointLevelDetail, PointMoveDetail, PointSelectDetail, DragStateDetail, AquariumScheduleChart } from "./aquarium-schedule-chart.ts";
 import type { AquariumSheet } from "./aquarium-sheet.ts";
 import type { SliderDetail } from "./aquarium-slider.ts";
-import type { ToastRequest } from "./lu-toast.ts";
-import "./lu-chip.ts";
-import "./lu-icon-button.ts";
-import "./lu-notice.ts";
-import "./lu-pill-button.ts";
+import type { ToastRequest } from "./aq-toast.ts";
+import "./aq-chip.ts";
+import "./aq-icon-button.ts";
+import "./aq-notice.ts";
+import "./aq-pill-button.ts";
 import "./aquarium-hold-button.ts";
 import "./aquarium-schedule-chart.ts";
 import "./aquarium-sheet.ts";
@@ -44,7 +44,7 @@ interface UndoState {
   failed: boolean;
 }
 
-/** Focus the real button inside a `lu-pill-button` (its host is not focusable itself). */
+/** Focus the real button inside a `aq-pill-button` (its host is not focusable itself). */
 function focusPill(host: Element | null): void {
   host?.shadowRoot?.querySelector<HTMLElement>("button")?.focus();
 }
@@ -457,7 +457,7 @@ export class AquariumDiyEditor extends LitElement {
     } else if (status.phase === "error") {
       line = html`<span class="status-text warn">${icon("alert")}Preview failed: ${status.message ?? "the light did not answer."}</span>`;
     } else if (status.phase === "active") {
-      line = html`<lu-chip kind="positive" dot label="Previewing on the light"></lu-chip>`;
+      line = html`<aq-chip kind="positive" dot label="Previewing on the light"></aq-chip>`;
     } else if (status.endedBy === "idle") {
       line = html`<span class="status-text">${icon("clock")}Preview stopped after 3 minutes of inactivity</span>`;
     } else {
@@ -525,9 +525,9 @@ export class AquariumDiyEditor extends LitElement {
       <div class="time-row">
         <span class="row-label" id="time-label">Time</span>
         <div class="time-control">
-          <lu-icon-button tone="raised" icon="minus" label="15 minutes earlier" ?disabled=${!canEarlier} @lu-press=${() => this._step(-STEP_MINUTES)}></lu-icon-button>
+          <aq-icon-button tone="raised" icon="minus" label="15 minutes earlier" ?disabled=${!canEarlier} @lu-press=${() => this._step(-STEP_MINUTES)}></aq-icon-button>
           <input type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="5" placeholder="HH:MM" aria-labelledby="time-label" .value=${live(formatTime(point.minutes))} @change=${this._onTimeChange} @focus=${(event: FocusEvent) => (event.target as HTMLInputElement).select()} />
-          <lu-icon-button tone="raised" icon="plus" label="15 minutes later" ?disabled=${!canLater} @lu-press=${() => this._step(STEP_MINUTES)}></lu-icon-button>
+          <aq-icon-button tone="raised" icon="plus" label="15 minutes later" ?disabled=${!canLater} @lu-press=${() => this._step(STEP_MINUTES)}></aq-icon-button>
         </div>
       </div>
       ${this._timeError ? html`<p class="field-error" role="alert">${icon("alert")}${this._timeError}</p>` : nothing}
@@ -549,8 +549,8 @@ export class AquariumDiyEditor extends LitElement {
       return html`<div class="strip" role="group" aria-label="Unsaved changes">
         <span class="strip-text">Discard unsaved changes?</span>
         <div class="strip-actions">
-          <lu-pill-button class="keep-editing" variant="primary" label="Keep editing" @lu-press=${() => (this._discarding = false)}></lu-pill-button>
-          <lu-pill-button variant="secondary" label="Discard" @lu-press=${this._discard}></lu-pill-button>
+          <aq-pill-button class="keep-editing" variant="primary" label="Keep editing" @lu-press=${() => (this._discarding = false)}></aq-pill-button>
+          <aq-pill-button variant="secondary" label="Discard" @lu-press=${this._discard}></aq-pill-button>
         </div>
       </div>`;
     }
@@ -558,8 +558,8 @@ export class AquariumDiyEditor extends LitElement {
       return html`<div class="strip" role="group" aria-label="Confirm overwrite">
         <span class="strip-text">Overwrite ${targetName} on the light with ${pointCountLabel(count)}?</span>
         <div class="strip-actions">
-          <lu-pill-button class="confirm-cancel" variant="secondary" label="Cancel" @lu-press=${() => (this._confirming = false)}></lu-pill-button>
-          <lu-pill-button variant="primary" icon="save" label="Save now" @lu-press=${this._save}></lu-pill-button>
+          <aq-pill-button class="confirm-cancel" variant="secondary" label="Cancel" @lu-press=${() => (this._confirming = false)}></aq-pill-button>
+          <aq-pill-button variant="primary" icon="save" label="Save now" @lu-press=${this._save}></aq-pill-button>
         </div>
       </div>`;
     }
@@ -573,10 +573,10 @@ export class AquariumDiyEditor extends LitElement {
         : block
           ? html`<p class="note warn">${icon("alert")}${block}</p>`
           : html`<p class="note">${note}</p>`}
-      ${this._saveError ? html`<lu-notice kind="error" compact heading="Couldn't save the program" .message=${this._saveError} action-label="Try again" action-icon="refresh" @notice-action=${this._save}></lu-notice>` : nothing}
+      ${this._saveError ? html`<aq-notice kind="error" compact heading="Couldn't save the program" .message=${this._saveError} action-label="Try again" action-icon="refresh" @notice-action=${this._save}></aq-notice>` : nothing}
       <div class="actions">
         <aquarium-hold-button label="Hold to save to the light" complete-label="Saved" icon="save" ?disabled=${block !== null} ?busy=${this._saving} @confirmed=${this._save} @tap-confirm=${this._askConfirm}></aquarium-hold-button>
-        <lu-pill-button variant="quiet" label="Cancel" ?disabled=${this._saving} @lu-press=${() => this._sheet?.requestClose()}></lu-pill-button>
+        <aq-pill-button variant="quiet" label="Cancel" ?disabled=${this._saving} @lu-press=${() => this._sheet?.requestClose()}></aq-pill-button>
       </div>`;
   }
 
@@ -592,7 +592,7 @@ export class AquariumDiyEditor extends LitElement {
         <p class="sub">${this._draft.length} of ${this._max} points</p>
       </div>
       ${previewable
-        ? html`<lu-icon-button slot="actions" toggle .pressed=${this._previewOn} .icon=${this._previewOn ? "eye" : "eyeOff"} label="Preview on the light" ?disabled=${this._saving || this.phase === "unavailable"} @lu-press=${this._toggleEye}></lu-icon-button>`
+        ? html`<aq-icon-button slot="actions" toggle .pressed=${this._previewOn} .icon=${this._previewOn ? "eye" : "eyeOff"} label="Preview on the light" ?disabled=${this._saving || this.phase === "unavailable"} @lu-press=${this._toggleEye}></aq-icon-button>`
         : nothing}
       <div class="editor" ?inert=${this._saving}>
         ${this.template ? this._renderSaveTo(schedule) : nothing}
@@ -606,7 +606,7 @@ export class AquariumDiyEditor extends LitElement {
             <section class="points" aria-labelledby="points-label">
               <div class="points-head">
                 <span class="label" id="points-label">Points</span>
-                <lu-pill-button variant="secondary" icon="plus" label="Add point" ?disabled=${full} @lu-press=${() => this._insert()}></lu-pill-button>
+                <aq-pill-button variant="secondary" icon="plus" label="Add point" ?disabled=${full} @lu-press=${() => this._insert()}></aq-pill-button>
               </div>
               <div class="tray chips" role="radiogroup" aria-labelledby="points-label" @keydown=${this._onChipKey}>
                 ${this._draft.map(
@@ -629,7 +629,7 @@ export class AquariumDiyEditor extends LitElement {
       ${undo.failed
         ? html`<span class="strip-text">Can't put the point back: a program holds at most ${this._max} points</span>`
         : html`<span class="strip-text">Point at ${formatTime(undo.point.minutes)} deleted</span>
-          <div class="strip-actions"><lu-pill-button variant="secondary" icon="undo" label="Undo" @lu-press=${this._undoDelete}></lu-pill-button></div>`}
+          <div class="strip-actions"><aq-pill-button variant="secondary" icon="undo" label="Undo" @lu-press=${this._undoDelete}></aq-pill-button></div>`}
     </div>`;
   }
 
@@ -691,7 +691,7 @@ export class AquariumDiyEditor extends LitElement {
       .note.warn { color: var(--lu-ink); }
       .actions { display: flex; flex-wrap: wrap; gap: var(--lu-space-2); }
       .actions aquarium-hold-button { flex: 1 1 220px; min-width: 0; }
-      .actions lu-pill-button { flex: 0 1 auto; }
+      .actions aq-pill-button { flex: 0 1 auto; }
     `,
   ];
 }

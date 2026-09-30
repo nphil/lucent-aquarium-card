@@ -3,9 +3,9 @@ import type { DeviceModel, EffectMotion, TankColour } from "../adapters/types.ts
 import { clamp, cssRgbTriple, glowFor, type Glow } from "../lib/channels.ts";
 import { icon } from "../lib/icons.ts";
 import { CONTROL_CSS, prefersReducedMotion, TOKENS_CSS } from "../styles/tokens.ts";
-import "./lu-chip.ts";
-import "./lu-icon-button.ts";
-import "./lu-skeleton.ts";
+import "./aq-chip.ts";
+import "./aq-icon-button.ts";
+import "./aq-skeleton.ts";
 import "./aquarium-slider.ts";
 import type { SliderDetail } from "./aquarium-slider.ts";
 
@@ -87,7 +87,7 @@ export class AquariumHero extends LitElement {
   render() {
     const model = this.model;
     if (!model || model.phase === "loading") {
-      return html`<div class="hero loading"><lu-skeleton label="Loading the light" height="100%"></lu-skeleton></div>`;
+      return html`<div class="hero loading"><aq-skeleton label="Loading the light" height="100%"></aq-skeleton></div>`;
     }
     const on = model.phase === "on";
     const unavailable = model.phase === "unavailable";
@@ -120,11 +120,11 @@ export class AquariumHero extends LitElement {
         ${scheduleDark ? html`<p class="dark-note">${model.running.kind === "schedule" ? "Dark at this hour of the schedule" : "All channels at 0%"}</p>` : nothing}
       </div>
       <div class="top">
-        ${model.status.chips.map((chip) => html`<lu-chip label=${chip.label} kind=${chip.kind} icon=${chip.icon}></lu-chip>`)}
-        ${model.status.mode ? html`<lu-chip label=${model.status.mode}></lu-chip>` : nothing}
-        ${this.demo ? html`<lu-chip label="Demo running" kind="warning" icon="playCircle"></lu-chip>` : nothing}
+        ${model.status.chips.map((chip) => html`<aq-chip label=${chip.label} kind=${chip.kind} icon=${chip.icon}></aq-chip>`)}
+        ${model.status.mode ? html`<aq-chip label=${model.status.mode}></aq-chip>` : nothing}
+        ${this.demo ? html`<aq-chip label="Demo running" kind="warning" icon="playCircle"></aq-chip>` : nothing}
       </div>
-      <lu-icon-button class="more" icon="info" label="Open light details" tone="raised" @lu-press=${this._moreInfo}></lu-icon-button>
+      <aq-icon-button class="more" icon="info" label="Open light details" tone="raised" @lu-press=${this._moreInfo}></aq-icon-button>
       <div class="bottom">
         <button type="button" class="power" aria-label=${powerLabel} aria-pressed=${on ? "true" : "false"} ?disabled=${unavailable} aria-busy=${this.powerPending ? "true" : "false"} @click=${this._togglePower}>
           ${icon("power")}
@@ -150,7 +150,7 @@ export class AquariumHero extends LitElement {
         --art-floor: #050c10;
       }
       .hero { position: relative; isolation: isolate; width: 100%; aspect-ratio: var(--hero-aspect, 16 / 10); height: var(--hero-height, auto); min-height: 200px; overflow: hidden; border-radius: var(--hero-radius, var(--lu-radius-tile)); background: var(--art-water-bottom); }
-      .hero.loading lu-skeleton { display: block; height: 100%; }
+      .hero.loading aq-skeleton { display: block; height: 100%; }
       .art { position: absolute; inset: 0; z-index: 0; }
       .water { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 0%, transparent 42%, rgb(0 0 0 / 0.5) 100%), linear-gradient(180deg, var(--art-water-top), var(--art-water-mid) 48%, var(--art-water-bottom)); }
       .glow { position: absolute; inset: 0; opacity: 0; transition: opacity var(--lu-motion-card) var(--lu-ease); }

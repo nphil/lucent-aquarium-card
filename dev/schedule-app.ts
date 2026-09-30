@@ -1,6 +1,6 @@
 /** Isolated harness for the Schedule tab: mounts one `<aquarium-schedule-panel>` inside the
  * `ha-card` shim, wired the way the card wires it (a `DeviceModel` from an adapter, a shared
- * `ProgramStore`, toasts through `lu-toast`, activation through the adapter's commands).
+ * `ProgramStore`, toasts through `aq-toast`, activation through the adapter's commands).
  *
  * Query: theme=dark|light|glass-dark|glass-light, width=<px>, state=on|off|unavailable|scene|program,
  * program=<id or index 0-5> (the program to view), edit=1 (open the editor as soon as it can be),
@@ -9,11 +9,11 @@
  * reads fail).
  * `window.__mock` exposes the pieces for scripted checks. */
 import "./ha-card-shim.ts";
-import "../src/components/lu-toast.ts";
+import "../src/components/aq-toast.ts";
 import "../src/components/aquarium-schedule-panel.ts";
 import { bindLight } from "../src/adapters/index.ts";
 import type { ActionDef, HassRef } from "../src/adapters/types.ts";
-import type { LuToast, ToastRequest } from "../src/components/lu-toast.ts";
+import type { LuToast, ToastRequest } from "../src/components/aq-toast.ts";
 import type { AquariumSchedulePanel, ScheduleDevice } from "../src/components/aquarium-schedule-panel.ts";
 import { describeError } from "../src/lib/errors.ts";
 import { ProgramStore } from "../src/lib/program-store.ts";
@@ -61,7 +61,7 @@ async function main(): Promise<void> {
   const frame = document.createElement("div");
   frame.className = "frame";
   const panel = document.createElement("aquarium-schedule-panel");
-  const toast = document.createElement("lu-toast") as LuToast;
+  const toast = document.createElement("aq-toast") as LuToast;
   frame.append(panel);
   card.append(frame, toast);
   wrap.append(card);
@@ -169,7 +169,7 @@ async function main(): Promise<void> {
   if (q.get("edit") === "1") {
     const deadline = performance.now() + 15_000;
     const press = (): void => {
-      const buttons = [...(panel.shadowRoot?.querySelectorAll("lu-pill-button") ?? [])];
+      const buttons = [...(panel.shadowRoot?.querySelectorAll("aq-pill-button") ?? [])];
       const target = buttons.find((button) => ["Edit", "Customise", "Create program"].includes(button.label) && !button.disabled);
       if (target) target.shadowRoot?.querySelector("button")?.click();
       else if (performance.now() < deadline) setTimeout(press, 60);

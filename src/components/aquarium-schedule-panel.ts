@@ -11,12 +11,12 @@ import { describeView, groupPrograms, initialProgram, planActions, suggestSlot, 
 import { SEGMENT_CSS } from "../styles/schedule.ts";
 import { CONTROL_CSS, TOKENS_CSS } from "../styles/tokens.ts";
 import type { EditorClosedDetail } from "./aquarium-diy-editor.ts";
-import type { ToastRequest } from "./lu-toast.ts";
-import "./lu-chip.ts";
-import "./lu-icon-button.ts";
-import "./lu-notice.ts";
-import "./lu-pill-button.ts";
-import "./lu-skeleton.ts";
+import type { ToastRequest } from "./aq-toast.ts";
+import "./aq-chip.ts";
+import "./aq-icon-button.ts";
+import "./aq-notice.ts";
+import "./aq-pill-button.ts";
+import "./aq-skeleton.ts";
 import "./aquarium-diy-editor.ts";
 import "./aquarium-schedule-chart.ts";
 
@@ -269,14 +269,14 @@ export class AquariumSchedulePanel extends LitElement {
     const entry = store.entry(program.id);
     switch (view.kind) {
       case "loading":
-        return html`<lu-skeleton label=${`Loading ${program.name}`} height="var(--chart-h)"></lu-skeleton>
-          <lu-skeleton height="calc(var(--chart-extras) - 4px)" style="margin-top:4px"></lu-skeleton>`;
+        return html`<aq-skeleton label=${`Loading ${program.name}`} height="var(--chart-h)"></aq-skeleton>
+          <aq-skeleton height="calc(var(--chart-extras) - 4px)" style="margin-top:4px"></aq-skeleton>`;
       case "error":
-        return html`<lu-notice kind="error" heading=${`Couldn't read ${program.name}`} .message=${view.message} action-label="Retry" action-icon="refresh" ?busy=${entry.status === "loading"} @notice-action=${() => this._reload(program.id)}></lu-notice>`;
+        return html`<aq-notice kind="error" heading=${`Couldn't read ${program.name}`} .message=${view.message} action-label="Retry" action-icon="refresh" ?busy=${entry.status === "loading"} @notice-action=${() => this._reload(program.id)}></aq-notice>`;
       case "link-down": {
         const builtIn = groups.find((group) => group.programs.every((candidate) => !candidate.editable))?.label;
         const rest = builtIn ? ` ${builtIn} still work.` : "";
-        return html`<lu-notice kind="warning" heading="The light isn't connected" .message=${`${program.name} is stored on the light, so it can't be read or changed until Bluetooth is back.${rest}`}></lu-notice>`;
+        return html`<aq-notice kind="warning" heading="The light isn't connected" .message=${`${program.name} is stored on the light, so it can't be read or changed until Bluetooth is back.${rest}`}></aq-notice>`;
       }
       case "empty":
         return html`<div class="empty">
@@ -284,7 +284,7 @@ export class AquariumSchedulePanel extends LitElement {
           <h4 class="empty-title">${program.name} is empty</h4>
           <p class="empty-text">Nothing is stored in this slot yet, so there is nothing to activate. Create a program to schedule your own light through the day.</p>
           ${plan.secondary
-            ? html`<lu-pill-button variant="primary" icon="plus" label="Create program" ?disabled=${plan.secondary.disabledReason !== null} @lu-press=${() => this._openEditor("create", program, null)}></lu-pill-button>
+            ? html`<aq-pill-button variant="primary" icon="plus" label="Create program" ?disabled=${plan.secondary.disabledReason !== null} @lu-press=${() => this._openEditor("create", program, null)}></aq-pill-button>
                 ${plan.secondary.disabledReason ? html`<p class="reason">${plan.secondary.disabledReason}</p>` : nothing}`
             : nothing}
         </div>`;
@@ -297,9 +297,9 @@ export class AquariumSchedulePanel extends LitElement {
 
   private _renderNotice(program: ScheduleProgram, notice: ViewNotice, busy: boolean): TemplateResult {
     if (notice.kind === "link-down") {
-      return html`<lu-notice kind="warning" compact heading="The light isn't connected" message="Showing the values last read from the light. They are read again when it is back."></lu-notice>`;
+      return html`<aq-notice kind="warning" compact heading="The light isn't connected" message="Showing the values last read from the light. They are read again when it is back."></aq-notice>`;
     }
-    return html`<lu-notice kind="error" compact heading=${`Couldn't refresh ${program.name}`} .message=${`${notice.message} Showing the values last read.`} action-label="Retry" action-icon="refresh" ?busy=${busy} @notice-action=${() => this._reload(program.id)}></lu-notice>`;
+    return html`<aq-notice kind="error" compact heading=${`Couldn't refresh ${program.name}`} .message=${`${notice.message} Showing the values last read.`} action-label="Retry" action-icon="refresh" ?busy=${busy} @notice-action=${() => this._reload(program.id)}></aq-notice>`;
   }
 
   private _renderValues(schedule: ScheduleModel, program: ScheduleProgram, points: readonly SchedulePoint[]): TemplateResult | typeof nothing {
@@ -341,10 +341,10 @@ export class AquariumSchedulePanel extends LitElement {
     if (!plan.activate && !secondary && !note) return nothing;
     return html`<div class="actions">
         ${plan.activate
-          ? html`<lu-pill-button variant="primary" icon="playCircle" label="Activate" grow ?loading=${this.activating} ?disabled=${plan.activate.disabledReason !== null} @lu-press=${() => this._activate(program.id)}></lu-pill-button>`
+          ? html`<aq-pill-button variant="primary" icon="playCircle" label="Activate" grow ?loading=${this.activating} ?disabled=${plan.activate.disabledReason !== null} @lu-press=${() => this._activate(program.id)}></aq-pill-button>`
           : nothing}
         ${secondary
-          ? html`<lu-pill-button variant="secondary" grow .icon=${secondary.kind === "edit" ? "pencil" : "tune"} .label=${secondary.kind === "edit" ? "Edit" : "Customise"} ?disabled=${secondary.disabledReason !== null} @lu-press=${() => this._openEditor(secondary.kind, program, data)}></lu-pill-button>`
+          ? html`<aq-pill-button variant="secondary" grow .icon=${secondary.kind === "edit" ? "pencil" : "tune"} .label=${secondary.kind === "edit" ? "Edit" : "Customise"} ?disabled=${secondary.disabledReason !== null} @lu-press=${() => this._openEditor(secondary.kind, program, data)}></aq-pill-button>`
           : nothing}
       </div>
       ${reasons.map((reason) => html`<p class="reason">${reason}</p>`)}
@@ -356,7 +356,7 @@ export class AquariumSchedulePanel extends LitElement {
     return html`<div class="device-actions" role="group" aria-label="Light actions">
       <div class="device-buttons">
         ${actions.map(
-          (action) => html`<lu-pill-button variant="quiet" .icon=${action.icon} .label=${action.label} ?disabled=${action.unavailable !== undefined} ?loading=${this._busy.includes(action.id)} @lu-press=${() => void this._runAction(action)}></lu-pill-button>`,
+          (action) => html`<aq-pill-button variant="quiet" .icon=${action.icon} .label=${action.label} ?disabled=${action.unavailable !== undefined} ?loading=${this._busy.includes(action.id)} @lu-press=${() => void this._runAction(action)}></aq-pill-button>`,
         )}
       </div>
       ${actions.filter((action) => action.unavailable).map((action) => html`<p class="reason">${action.label}: ${action.unavailable}</p>`)}
@@ -367,7 +367,7 @@ export class AquariumSchedulePanel extends LitElement {
     const device = this.device;
     const schedule = this._schedule;
     if (!device || !schedule || !this.store) {
-      return html`<lu-notice kind="info" heading="No schedule" message="This light does not report a schedule."></lu-notice>`;
+      return html`<aq-notice kind="info" heading="No schedule" message="This light does not report a schedule."></aq-notice>`;
     }
     const groups = groupPrograms(schedule.programs);
     const viewed = this._viewedId;
@@ -384,8 +384,8 @@ export class AquariumSchedulePanel extends LitElement {
       view = html`<section class="view" aria-labelledby="view-title">
         <header class="view-head">
           <h3 class="view-title" id="view-title">${program.name}</h3>
-          ${running ? html`<lu-chip kind="positive" dot label="Running now"></lu-chip>` : nothing}
-          <lu-icon-button class="refresh" icon="refresh" label="Reload from the light" ?disabled=${entry.status === "loading"} @lu-press=${() => this._reload(program.id)}></lu-icon-button>
+          ${running ? html`<aq-chip kind="positive" dot label="Running now"></aq-chip>` : nothing}
+          <aq-icon-button class="refresh" icon="refresh" label="Reload from the light" ?disabled=${entry.status === "loading"} @lu-press=${() => this._reload(program.id)}></aq-icon-button>
         </header>
         <div class="slot">${this._renderSlot(schedule, program, state, plan, groups)}</div>
         ${state.kind === "chart" ? this._renderValues(schedule, program, state.data.points) : nothing}
@@ -454,7 +454,7 @@ export class AquariumSchedulePanel extends LitElement {
       .col-dot { display: inline-block; width: 8px; height: 8px; margin-right: 5px; border-radius: 50%; box-shadow: 0 0 0 1px color-mix(in srgb, var(--lu-ink) 30%, transparent); }
 
       .actions { display: flex; flex-wrap: wrap; gap: var(--lu-space-2); }
-      .actions lu-pill-button { flex: 1 1 140px; }
+      .actions aq-pill-button { flex: 1 1 140px; }
       .device-actions { display: grid; gap: var(--lu-space-2); padding-top: var(--lu-space-4); border-top: 1px solid var(--lu-edge); }
       .device-buttons { display: flex; flex-wrap: wrap; gap: var(--lu-space-2); }
     `,

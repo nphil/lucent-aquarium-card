@@ -31,10 +31,10 @@ export class LuSkeleton extends LitElement {
   ];
 }
 
-customElements.define("lu-skeleton", LuSkeleton);
+customElements.define("aq-skeleton", LuSkeleton);
 
 declare global {
   interface HTMLElementTagNameMap {
-    "lu-skeleton": LuSkeleton;
+    "aq-skeleton": LuSkeleton;
   }
 }
