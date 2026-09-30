@@ -1,0 +1,26 @@
+{
+  "name": "aquarium-light-card",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Lit 3 + TypeScript source for the aquarium-light-card Lovelace card (Pawfly and Fluval aquarium lights)",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --format=esm --platform=browser --target=es2021 --minify --legal-comments=none --outfile=dist/aquarium-light-card.js",
+    "build:dev": "esbuild src/main.ts --bundle --format=esm --platform=browser --target=es2021 --outfile=dev/dist/aquarium-light-card.js --sourcemap",
+    "watch": "esbuild src/main.ts --bundle --format=esm --platform=browser --target=es2021 --outfile=dev/dist/aquarium-light-card.js --sourcemap --watch",
+    "build:harness": "esbuild dev/app.ts --bundle --format=esm --platform=browser --target=es2021 --outfile=dev/dist/app.js --sourcemap",
+    "harness": "npm run build:dev && npm run build:harness && bun dev/serve.mjs",
+    "test": "bun test test/",
+    "typecheck": "tsc --noEmit",
+    "build:schedule-harness": "esbuild dev/schedule-app.ts --bundle --format=esm --platform=browser --target=es2021 --outfile=dev/dist/schedule-app.js --sourcemap"
+  },
+  "dependencies": {
+    "lit": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.24.2",
+    "typescript": "^5.7.3"
+  }
+}
