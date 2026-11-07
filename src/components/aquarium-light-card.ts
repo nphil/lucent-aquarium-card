@@ -23,6 +23,7 @@ import "./aquarium-effects-panel.ts";
 import "./aquarium-schedule-panel.ts";
 import "./aquarium-program-panel.ts";
 import "./aquarium-card-editor.ts";
+import { entityDisplayName } from "../lib/entity-name.ts";
 
 interface TabInfo {
   id: CardTab;
@@ -333,7 +334,7 @@ export class AquariumLightCard extends LitElement {
   };
 
   private _title(model: DeviceModel | null): string {
-    return this._config?.name || model?.name || "Aquarium light";
+    return this._config?.name || (this.hass ? entityDisplayName(this.hass, this._config?.entity) : undefined) || model?.name || "Aquarium light";
   }
 
   private _timeZone(): string | undefined {

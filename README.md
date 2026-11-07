@@ -9,7 +9,9 @@ Two Lovelace cards for an aquarium in Home Assistant, built on the Lucent design
 
 ## Install
 
-HACS → Frontend → custom repository `nphil/lucent-aquarium-card` (type Dashboard). HACS adds the resource; both cards are then in the card picker.
+Home Assistant 2026.11 and newer: add `nphil/lucent-aquarium-card` from the built-in Marketplace (it is a public GitHub repository with a `hacs.json`). Before 2026.11: HACS → Frontend → custom repository `nphil/lucent-aquarium-card` (type Dashboard). Either way the resource is added for you and both cards appear in the card picker.
+
+Works on Home Assistant 2026.10 and 2026.11. Card names follow Home Assistant's own naming (`hass.formatEntityName`, falling back to `friendly_name`).
 
 ## Light card
 

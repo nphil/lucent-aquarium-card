@@ -5,6 +5,7 @@ import { DraftSync } from "../lib/draft-sync.ts";
 import { FLUVAL_PLATFORM } from "../adapters/fluval-data.ts";
 import type { AquariumCardConfig, CardTab, HomeAssistant, ProgramConfig } from "../types.ts";
 import { CONTROL_CSS, TOKENS_CSS } from "../styles/tokens.ts";
+import { entityDisplayName } from "../lib/entity-name.ts";
 
 interface SchemaField {
   name: string;
@@ -127,7 +128,7 @@ export class AquariumCardEditor extends LitElement {
       <span>${LABELS[key]}</span>
       <select .value=${current} @change=${(event: Event) => this._apply({ ...data, program: { ...data.program, [key]: (event.target as HTMLSelectElement).value } })}>
         <option value="">${key === "select" || key === "automation" ? "Choose…" : "None"}</option>
-        ${options.map((id) => html`<option value=${id} ?selected=${id === current}>${this.hass.states[id]?.attributes.friendly_name ?? id}</option>`)}
+        ${options.map((id) => html`<option value=${id} ?selected=${id === current}>${entityDisplayName(this.hass, id) ?? id}</option>`)}
       </select>
       <small>${HELPERS[key]}</small>
     </label>`;
@@ -142,7 +143,7 @@ export class AquariumCardEditor extends LitElement {
         <span>${LABELS.entity}</span>
         <select .value=${data.entity ?? ""} @change=${(event: Event) => this._apply({ ...data, entity: (event.target as HTMLSelectElement).value })}>
           <option value="">Choose a light…</option>
-          ${lights.map((id) => html`<option value=${id} ?selected=${id === data.entity}>${this.hass.states[id]?.attributes.friendly_name ?? id}</option>`)}
+          ${lights.map((id) => html`<option value=${id} ?selected=${id === data.entity}>${entityDisplayName(this.hass, id) ?? id}</option>`)}
         </select>
       </label>
       <label>

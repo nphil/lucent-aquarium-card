@@ -4,6 +4,7 @@ import { DraftSync } from "../lib/draft-sync.ts";
 import { cleanEquipmentConfig, formFromEquipmentConfig, type EquipmentFormData } from "../lib/equipment-config.ts";
 import { CONTROL_CSS, TOKENS_CSS } from "../styles/tokens.ts";
 import type { EquipmentCardConfig, EquipmentOutletConfig, HomeAssistant, OutletRole } from "../types.ts";
+import { entityDisplayName } from "../lib/entity-name.ts";
 
 interface SchemaField {
   name: string;
@@ -153,7 +154,7 @@ export class AquariumEquipmentEditor extends LitElement {
       <span>${label}</span>
       <select .value=${value ?? ""} @change=${(event: Event) => onChange((event.target as HTMLSelectElement).value)}>
         <option value="">${empty}</option>
-        ${options.map((id) => html`<option value=${id} ?selected=${id === value}>${this.hass.states[id]?.attributes.friendly_name ?? id}</option>`)}
+        ${options.map((id) => html`<option value=${id} ?selected=${id === value}>${entityDisplayName(this.hass, id) ?? id}</option>`)}
       </select>
     </label>`;
   }

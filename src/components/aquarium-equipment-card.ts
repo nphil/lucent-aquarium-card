@@ -46,6 +46,7 @@ import "./aquarium-equipment-editor.ts";
 import "./aquarium-outlet-tile.ts";
 import "./aquarium-sheet.ts";
 import "./aquarium-water-hero.ts";
+import { entityDisplayName } from "../lib/entity-name.ts";
 
 const DAY_MS = 86_400_000;
 /** The minute tick keeps ages ("3 min ago") and the CO2 window current. */
@@ -338,8 +339,7 @@ export class AquariumEquipmentCard extends LitElement {
     const states = hass.states;
     const automatic = outlets.map((outlet) => {
       const role = normaliseRole(outlet.role);
-      const friendly = states[outlet.switch]?.attributes.friendly_name;
-      return typeof friendly === "string" && friendly !== "" ? friendly : (hass.entities?.[outlet.switch]?.name ?? ROLE_INFO[role].title);
+      return entityDisplayName(hass, outlet.switch) ?? ROLE_INFO[role].title;
     });
     // Words every name starts with ("Aquarium ...") are dropped, but only from names nobody wrote.
     const unnamed = outlets.map((outlet, index) => (outlet.name ? null : index)).filter((index): index is number => index !== null);

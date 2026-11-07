@@ -62,6 +62,12 @@ export interface HomeAssistant {
     notifyOnError?: boolean,
   ) => Promise<unknown>;
   callWS: CallWS;
+  /** Home Assistant 2026.4+: the display name its built-in cards use (device + entity). */
+  formatEntityName?: (
+    stateObj: HassEntityState,
+    config?: Array<{ type: "entity" | "device" | "area" | "floor" } | { type: "text"; text: string }>,
+    options?: { separator?: string },
+  ) => string | undefined;
   /** REST calls (the automation editor's save endpoint lives here). */
   callApi?: CallApi;
   /** Who is looking. Program editing needs an administrator. */

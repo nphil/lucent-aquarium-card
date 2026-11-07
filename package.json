@@ -1,6 +1,6 @@
 {
   "name": "aquarium-light-card",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Lit 3 + TypeScript source for the aquarium Lovelace cards: aquarium-light-card (Pawfly and Fluval lights, Fluval lighting programs) and aquarium-equipment-card",
   "type": "module",
